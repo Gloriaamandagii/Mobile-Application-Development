@@ -8,9 +8,11 @@ import Transaction1 from './src/pages/Transaction1';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import FlashMessage from 'react-native-flash-message';
+import './src/config/Firebase';
+
 const Stack = createNativeStackNavigator();
 
-const App = () => {
+const app = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -50,4 +52,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default app;
