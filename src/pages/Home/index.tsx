@@ -3,7 +3,8 @@ import {View, Text, StyleSheet, Image} from 'react-native';
 import {NullPhoto} from '../../assets/icon';
 import {Button, Gap} from '../../components/atoms';
 
-export default function MoneyTracker({navigation}) {
+const Home = ({navigation, route}) => {
+  const {uid} = route.params;
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -39,7 +40,9 @@ export default function MoneyTracker({navigation}) {
       </View>
     </View>
   );
-}
+};
+
+export default Home;
 
 const styles = StyleSheet.create({
   container: {

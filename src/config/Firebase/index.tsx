@@ -13,6 +13,7 @@ const firebaseConfig = {
   storageBucket: 'money-tracker-ee1bd.firebasestorage.app',
   messagingSenderId: '12087493102',
   appId: '1:12087493102:web:89344c6e2e72a15aa34eff',
+  databaseURL: 'https://money-tracker-e1bd-default-rtdb.firebaseio.com/',
 };
 
 // Initialize Firebase
