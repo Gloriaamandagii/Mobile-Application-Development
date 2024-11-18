@@ -36,33 +36,43 @@ const SignUp = ({navigation}) => {
       setPhoto(NullPhoto);
     } else {
       const assets = result.assets[0];
-      const base64 = `data:${assets.type};base64, ${assets.base64}`;
+      const base64 = `data:${assets.type};base64,${assets.base64}`;
       setPhotoBased64(base64);
       setPhoto({uri: base64});
     }
   };
 
   const createUser = () => {
+    if (!fullName || !email || !password) {
+      showMessage({
+        message: 'Semua field harus diisi!',
+        type: 'danger',
+      });
+      return;
+    }
+
     const auth = getAuth();
     const db = getDatabase();
 
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
-        // Signed up
         const user = userCredential.user;
-        // console.log(user);
         set(ref(db, 'users/' + user.uid), {
           fullName: fullName,
           email: email,
           photo: photoBased64,
         });
+        showMessage({
+          message: 'Pendaftaran berhasil!',
+          type: 'success',
+        });
+        navigation.navigate('Home'); // Ubah sesuai halaman setelah sukses
       })
       .catch(error => {
         showMessage({
           message: error.message,
           type: 'danger',
         });
-        // ..
       });
   };
 
@@ -100,7 +110,8 @@ const SignUp = ({navigation}) => {
         <TextInput
           label="Password"
           placeholder="Type your password"
-          onChangeText={value => setEmail(value)}
+          secureTextEntry
+          onChangeText={value => setPassword(value)} // FIXED: Menggunakan setPassword
         />
         <Gap height={24} />
         <Button text="Continue" onPress={createUser} />

@@ -1,41 +1,73 @@
-import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
-import {NullPhoto} from '../../assets/icon';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, View, Image} from 'react-native';
 import {Button, Gap} from '../../components/atoms';
+import {DummyPhoto} from '../../assets/icon';
+import {getDatabase, ref, onValue} from 'firebase/database';
+import Rupiah from '../../utils/Rupiah';
 
 const Home = ({navigation, route}) => {
   const {uid} = route.params;
+  const [fullName, setFullName] = useState('');
+  const [cashInBank, setCashInBank] = useState(0);
+  const [cashInHand, setCashInHand] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [photo, setPhoto] = useState(DummyPhoto);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const userRef = ref(db, 'users/' + uid);
+    onValue(userRef, snapshot => {
+      const data = snapshot.val();
+      setPhoto({uri: data.photo});
+      setFullName(data.fullName);
+      setCashInBank(data.balance.cashInBank);
+      setCashInHand(data.balance.cashInHand);
+      setTotal(data.balance.total);
+    });
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Money Tracker</Text>
-        <Image source={NullPhoto} style={styles.profile} />
+    <View style={styles.pageContainer}>
+      <View style={styles.headerContainer}>
+        <View>
+          <Text style={styles.appTitle}>{`Hi, ${fullName}`}</Text>
+          <Text style={styles.appSubTitle}>
+            Have you track your money today?
+          </Text>
+        </View>
+        <Image source={photo} style={styles.photo} />
       </View>
-      <Text style={styles.subtitle}>Track your money</Text>
-      <Gap height={20} />
-      <View style={styles.balanceSection}>
-        <Text style={styles.balanceLabel}>Your Balance</Text>
-        <Text style={styles.balanceAmount}>Rp. 10.000.000</Text>
+      <View style={styles.contentWrapper}>
+        <Text style={styles.subTitle}>Your Balance</Text>
+        <Text style={styles.totalBalance}>{Rupiah(total)}</Text>
         <View style={styles.line} />
-      </View>
-      <View style={styles.subTotal}>
-        <Text style={styles.labelOn}>Cash on Hand</Text>
-        <Text style={styles.amountOn}>Rp. 4.000.000</Text>
-      </View>
-      <View style={styles.subTotal}>
-        <Text style={styles.labelOn}>Cash on Bank</Text>
-        <Text style={styles.amountOn}>Rp. 6.000.000</Text>
-      </View>
-      <View style={styles.transactionSection}>
-        <Text style={styles.transactionTitle}>Add Transaction</Text>
+        <View style={styles.subTotalWrapper}>
+          <Text style={styles.subTotal}>Cash On Hand</Text>
+          <Text style={styles.subTotal}>{Rupiah(cashInHand)}</Text>
+        </View>
+        <View style={styles.subTotalWrapper}>
+          <Text style={styles.subTotal}>Cash On Bank</Text>
+          <Text style={styles.subTotal}>{Rupiah(cashInBank)}</Text>
+        </View>
+        <Text style={styles.subTitle}>Add Transaction</Text>
         <Button
           text="Cash On Hand"
-          onPress={() => navigation.navigate('Transaction')}
+          onPress={() =>
+            navigation.navigate('AddTransaction', {
+              title: 'Cash On Hand',
+              uid: uid,
+            })
+          }
         />
-        <Gap height={26} />
+        <Gap height={10} />
         <Button
           text="Cash On Bank"
-          onPress={() => navigation.navigate('Transaction1')}
+          onPress={() =>
+            navigation.navigate('AddTransaction', {
+              title: 'Cash On Bank',
+              uid: uid,
+            })
+          }
         />
       </View>
     </View>
@@ -45,87 +77,62 @@ const Home = ({navigation, route}) => {
 export default Home;
 
 const styles = StyleSheet.create({
-  container: {
+  pageContainer: {
     flex: 1,
-    backgroundColor: '#FAFAFC',
-    padding: 16,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  profile: {
-    width: 50,
-    height: 50,
-    top: 32,
-  },
-  title: {
-    fontSize: 24,
-    color: '#020202',
-    fontFamily: 'Poppins-Regular',
-    marginRight: 80,
-  },
-  subtitle: {
-    color: '#8D92A3',
-    fontSize: 14,
-    marginLeft: 7,
-    fontFamily: 'Poppins-Regular',
-    marginTop: -9,
-  },
-  profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  balanceSection: {
-    backgroundColor: '#f7f7f7',
-    padding: 7,
+  contentWrapper: {
+    paddingHorizontal: 24,
+    backgroundColor: '#FFFFFF',
     marginTop: 20,
+    flex: 1,
   },
-  subTotal: {
+  subTitle: {
+    fontFamily: 'Poppins-Medium',
+    color: '#000000',
+    fontSize: 16,
+    marginVertical: 12,
+  },
+  totalBalance: {
+    fontFamily: 'Poppins-SemiBold',
+    color: '#000000',
+    fontSize: 24,
+    textAlign: 'center',
+  },
+  line: {
+    borderBottomColor: '#000000',
+    borderBottomWidth: 1,
+    marginVertical: 18,
+  },
+  subTotalWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-
-  balanceLabel: {
+  subTotal: {
+    fontFamily: 'Poppins-Regular',
     fontSize: 14,
-    color: '#020202',
-    fontFamily: 'Poppins-Regular',
+    color: '#000000',
   },
-  balanceAmount: {
+  headerContainer: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 24,
+    paddingVertical: 37,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  appTitle: {
+    fontFamily: 'Poppins-Medium',
     fontSize: 22,
-    fontFamily: 'Poppins-Bold',
-    marginVertical: 3,
-    marginHorizontal: 50,
-    color: '#000000',
-    marginLeft: 70,
-  },
-  line: {
-    width: 315,
-    height: 2,
-    backgroundColor: '#000000',
-    marginVertical: 8,
-  },
-  labelOn: {
-    fontSize: 16,
-    color: '#000000',
-    marginVertical: 4,
-    marginLeft: 10,
-    fontFamily: 'Poppins-Regular',
-  },
-  amountOn: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginRight: 80,
-  },
-  transactionSection: {
-    marginVertical: 60,
-  },
-  transactionTitle: {
-    fontSize: 18,
     color: '#020202',
-    fontFamily: 'Poppins-Bold',
+  },
+  appSubTitle: {
+    fontFamily: 'Poppins-Light',
+    fontSize: 14,
+    color: '#8D92A3',
+  },
+  photo: {
+    height: 70,
+    width: 70,
+    borderRadius: 10,
   },
 });

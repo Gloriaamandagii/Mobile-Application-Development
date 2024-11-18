@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {Header, TextInput} from '../../components/molecules';
 import {Button, Gap} from '../../components/atoms';
@@ -9,21 +9,26 @@ const SignIn = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const auth = getAuth();
+
   const onSubmit = () => {
+    if (email === '' || password === '') {
+      showMessage({
+        message: 'Email dan password tidak boleh kosong!',
+        type: 'danger',
+      });
+      return;
+    }
+
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
-        // Signed in
         const user = userCredential.user;
-        // console.log(user);
         showMessage({
-          message: 'Login Berhasil',
+          message: 'Login Berhasil!',
           type: 'success',
         });
         navigation.navigate('Home', {uid: user.uid});
       })
       .catch(error => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
         showMessage({
           message: error.message,
           type: 'danger',
@@ -73,4 +78,5 @@ const styles = StyleSheet.create({
     paddingTop: 25,
   },
 });
+
 export default SignIn;

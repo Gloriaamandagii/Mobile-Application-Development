@@ -1,24 +1,20 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const Transaction = ({date, desc, price, type}) => {
+const TransactionCard = ({date, desc, price, type}) => {
   return (
     <View style={styles.cardTransaction}>
       <View>
         <Text style={styles.textDate}>{date}</Text>
         <Text style={styles.textDescription}>{desc}</Text>
       </View>
-      {type === 'Kredit' && (
-        <Text style={styles.textPriceDebit}>Rp. -{price}</Text>
-      )}
-      {type === 'Debit' && (
-        <Text style={styles.textPriceCredit}>Rp. {price}</Text>
-      )}
+      {type === 'debit' && <Text style={styles.textPriceDebit}>{price}</Text>}
+      {type === 'credit' && <Text style={styles.textPriceCredit}>{price}</Text>}
     </View>
   );
 };
 
-export default Transaction;
+export default TransactionCard;
 
 const styles = StyleSheet.create({
   cardTransaction: {
@@ -26,11 +22,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderColor: 'black',
+    borderColor: '#000000',
     borderWidth: 1,
     borderRadius: 10,
     paddingVertical: 12,
-    paddingHorizontal: 20,
+    paddingHorizontal: 18,
   },
   textDate: {
     fontFamily: 'Poppins-Regular',

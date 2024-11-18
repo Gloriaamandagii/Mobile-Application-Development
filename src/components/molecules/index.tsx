@@ -1,6 +1,6 @@
 import Header from './Header';
 import TextInput from './TextInput';
-import Transaction from './Transaction';
+import TransactionCard from './TransactionCard';
 import Loading from './Loading';
 
-export {Header, TextInput, Transaction, Loading};
+export {Header, TextInput, TransactionCard, Loading};

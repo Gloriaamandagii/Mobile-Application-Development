@@ -9,10 +9,10 @@ import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 const firebaseConfig = {
   apiKey: 'AIzaSyDhh3eqwdTKeunxZlPmOUGXSmbKaJvtRm8',
   authDomain: 'money-tracker-ee1bd.firebaseapp.com',
+  databaseURL: 'https://money-tracker-ee1bd-default-rtdb.firebaseio.com',
   projectId: 'money-tracker-ee1bd',
   storageBucket: 'money-tracker-ee1bd.firebasestorage.app',
   messagingSenderId: '12087493102',
-  appId: '1:12087493102:web:89344c6e2e72a15aa34eff',
   databaseURL: 'https://money-tracker-e1bd-default-rtdb.firebaseio.com/',
 };
 
